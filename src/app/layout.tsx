@@ -29,6 +29,7 @@ export const metadata: Metadata = {
   title: 'La Media Res — Carnicería en Barrio Escalante, San José',
   description:
     'Carnicería de barrio en Barrio Escalante, San José. Compramos la canal entera, la maduramos en cámara y la cortamos en la carnicería. Cortes al momento, menudencias frescas y embutidos propios. Entregas en todo el GAM.',
+  icons: { icon: '/favicon.svg' },
   keywords: ['carnicería', 'San José', 'Barrio Escalante', 'cortes de res', 'menudencias', 'embutidos', 'SINPE Móvil'],
   openGraph: {
     title: 'La Media Res — Carnicería & Parrilla',
