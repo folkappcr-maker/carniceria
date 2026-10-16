@@ -10,13 +10,17 @@ Sin frameworks de CSS: el sistema de diseño es CSS propio con tokens.
 ## Cómo correrla
 
 ```bash
-pnpm install      # instalar dependencias
-pnpm dev          # desarrollo  → http://localhost:3100
-pnpm build        # build de producción
-pnpm start        # servir el build → http://localhost:3100
-pnpm typecheck    # chequeo de tipos
-pnpm verify:ui    # verificación de interacciones (ver más abajo)
+pnpm install       # instalar dependencias
+pnpm dev           # desarrollo con recarga → http://localhost:3100
+pnpm build         # export estático → out/ (rutas en la raíz)
+pnpm preview       # servir out/ → http://localhost:8080
+pnpm build:pages   # export con basePath /carniceria (lo que corre el CI)
+pnpm typecheck     # chequeo de tipos
+pnpm verify:ui     # verificación de interacciones (ver más abajo)
 ```
+
+El sitio es 100 % estático (`output: 'export'`), así que **no hay `next start`**: el build
+produce archivos sueltos en `out/`, que se sirven con `pnpm preview`.
 
 ## Localización Costa Rica
 
@@ -40,6 +44,8 @@ pnpm verify:ui    # verificación de interacciones (ver más abajo)
 
 ```
 la-media-res/
+├── .github/workflows/
+│   └── deploy.yml            deploy automático a GitHub Pages
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx        fuentes (next/font), metadatos, OrderProvider
@@ -145,12 +151,31 @@ interacciones de verdad: filtros, bandeja de pedido, mapa de cortes por click y 
 contadores, menú móvil, validación de la newsletter y que ningún bloque quede invisible.
 
 ```bash
-pnpm build && pnpm start            # en una terminal
+pnpm dev                            # o pnpm preview (sirve out/), en una terminal
 # en otra: Chrome con el puerto de depuración abierto apuntando al sitio
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
   --headless --remote-debugging-port=9222 --user-data-dir=/tmp/lmr-cdp http://127.0.0.1:3100/
 pnpm verify:ui                      # 18/18 verificaciones
+# si el sitio corre en otro puerto: SITE=http://127.0.0.1:8080/ pnpm verify:ui
 ```
+
+## Deploy
+
+El sitio se publica solo en **GitHub Pages**: cada push a `main` dispara
+`.github/workflows/deploy.yml`, que instala con pnpm, chequea tipos, exporta con
+`GITHUB_PAGES=true` (basePath `/carniceria`) y sube `out/` como artefacto de Pages.
+
+**https://folkappcr-maker.github.io/carniceria/**
+
+- El `basePath` solo se aplica en el build de CI: en local (`pnpm dev`, `pnpm preview`)
+  las rutas quedan en la raíz, así que no hay que pelear con prefijos.
+- Si el sitio pasa a **dominio propio** o a un repo de usuario (`usuario.github.io`),
+  hay que sacar el `basePath`: quitar `GITHUB_PAGES` del workflow, o ajustar `REPO` en
+  `next.config.mjs`.
+- Para activar Pages en otro repo: *Settings → Pages → Source: **GitHub Actions***,
+  o por consola: `gh api -X POST repos/{owner}/{repo}/pages -f build_type=workflow`.
+- **Alternativas sin tocar código**: Vercel o Cloudflare Pages, importando el repo.
+  Funcionan con repo privado (Pages en plan Free exige repo público).
 
 ## Antes de publicar
 

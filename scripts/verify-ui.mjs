@@ -3,7 +3,7 @@
  * Cada chequeo hace la acción, espera a que React re-renderice y recién ahí lee.
  */
 const ENDPOINT = 'http://127.0.0.1:9222/json/list';
-const SITE = process.env.SITE || 'http://127.0.0.1:3100/';
+const SITE = process.env.SITE || 'http://127.0.0.1:3100/'; // pnpm dev: 3100 · pnpm preview: 8080
 const wait = 'await new Promise(r=>setTimeout(r,220));';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -12,7 +12,7 @@ async function connect() {
     try {
       const res = await fetch(ENDPOINT);
       const targets = await res.json();
-      const page = targets.find((t) => t.type === 'page' && t.url.includes('3100'));
+      const page = targets.find((t) => t.type === 'page' && /127\.0\.0\.1|localhost/.test(t.url));
       if (page?.webSocketDebuggerUrl) return page.webSocketDebuggerUrl;
     } catch {}
     await sleep(250);

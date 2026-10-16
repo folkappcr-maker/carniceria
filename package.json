@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "next build",
-    "start": "next start -p 3100",
+    "build:pages": "GITHUB_PAGES=true next build",
+    "preview": "python3 -m http.server 8080 -d out",
     "typecheck": "tsc --noEmit",
     "verify:ui": "node scripts/verify-ui.mjs"
   },
@@ -20,5 +21,6 @@
     "@types/react-dom": "^19.3.0",
     "typescript": "^5.9.3"
   },
-  "description": "Landing de carnicería — La Media Res (Next.js + TypeScript)"
+  "description": "Landing de carnicería — La Media Res (Next.js + TypeScript)",
+  "packageManager": "pnpm@10.33.2"
 }
